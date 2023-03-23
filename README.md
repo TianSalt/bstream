@@ -1,81 +1,79 @@
-# Bstream Class
-The `Bstream` class is a binary stream class that allows you to read and write individual bits to a binary file.
+# bstream.h
 
-## Getting Started
-To use the `Bstream` class, you'll need to include the `Bstream.h` header file in your project.
+`bstream.h` is a C++ header file that provides an implementation of a binary stream class called `Bstream`. This class allows you to read and write individual bits to a binary file.
 
-```c++
-#include "Bstream.h"
-```
-## Creating an Object
-To use the `Bstream` class, you'll need to create an object of the class.
+**Note:** This code has been tested on little-endian systems only. It may not work correctly on big-endian systems, and further testing is required to ensure compatibility.
+
+## Quick Start
+
+To use `Bstream`, simply include the bstream.h header file in your C++ source code.
 
 ```c++
-Bstream bstream;
+#include "bstream.h"
 ```
-You can also specify the filename and mode for the file in the constructor.
+
+You can then create an instance of the `Bstream` class and use it to read from or write to a file.
 
 ```c++
-Bstream bstream("filename.bin", Bstream::WRITE);
+Bstream bs("myfile.bin", Bstream::READ_WRITE);
+bs.write(1);
+bs.write(0);
+bs.write(1);
 ```
-## Opening a File
-To open a file for reading and writing, you can use the `open()` method.
+
+In the above example, we create an instance of `Bstream` and open a file called myfile.bin in write mode. We then write three bits to the file using the write method and close the file using the close method.
+
+We can then read the data from the file using the `Bstream` class.
 
 ```c++
-bstream.open("filename.bin", Bstream::READ_WRITE);
+bool bit1 = bs.read();
+bool bit2 = bs.read();
+bool bit3 = bs.read();
+bs.close();
 ```
-## Reading and Writing Bits
-To read a bit from the file, you can use the `read()` method. It returns a boolean value that specifies the bit read. If the bit read is 1, it returns `true`; if it is 0, it returns `false`.
+
+In the above example, we create an instance of `Bstream` and open the same file in read mode. We then read the data from the file using the read method and store it in `bit1`, `bit2`, and `bit3` variables. We then close the file using the `close()` method.
+
+## Methods
+
+The `Bstream` class provides the following methods:
+
+- `void open(string file_name, ios_base::openmode mode = READ_WRITE)`
+  Opens the specified file in the specified open mode.
+- `void write(bool binary)`
+  Writes a single bit to the file. The bit is specified as a boolean value.
+- `bool read()`
+  Reads a single bit from the file and returns it as a boolean value.
+- `void close()`
+  Flushes the write buffer (i.e. fills all unwritten bits in the last byte with zero) and closes the file.
+- `bool eof()`
+  Returns true if the end of the file has been reached, otherwise false.
+
+## Open Modes
+
+The Bstream class provides four open modes:
+
+- `Bstream::READ` - Open the file for reading.
+- `Bstream::WRITE` - Open the file for writing. Any existing data in the file is truncated.
+- `Bstream::APPEND` - Open the file for writing. Data is appended to the end of the file.
+- `Bstream::READ_WRITE` - Open the file for both reading and writing.
+
+You can specify the open mode when creating an instance of the Bstream class.
 
 ```c++
-bool bit = bstream.read();
+Bstream bs("myfile.bin", Bstream::READ_WRITE);
 ```
-To write a bit to the file, you can use the `write()` method. It takes a boolean value that specifies the bit to be written. If the value is `true`, a 1 is written to the file; if it is `false`, a 0 is written.
+
+This is equivalent to:
 
 ```c++
-bstream.write(true);
+Bstream bs;
+bs.open("myfile.bin", Bstream::READ_WRITE);
 ```
-## Closing the File
-To close the file, you can use the `close()` method.
+
+You can DIY your own open modes, for example:
 
 ```c++
-bstream.close();
+using namespace std;
+static const ios_base::openmode READ_APPEND = ios_base::in | ios_base::app | ios_base::binary;
 ```
-## Example
-Here's an example of how you could use the Bstream class to read and write bits to a binary file.
-
-```c++
-#include "Bstream.h"
-
-int main() {
-    // create an object of the Bstream class
-    Bstream bstream("filename.bin", Bstream::WRITE);
-
-    // write some bits to the file
-    bstream.write(true);
-    bstream.write(false);
-    bstream.write(true);
-    bstream.write(false);
-
-    // close the file
-    bstream.close();
-
-    // reopen the file for reading
-    bstream.open("filename.bin", Bstream::READ);
-
-    // read the bits from the file
-    bool bit1 = bstream.read();
-    bool bit2 = bstream.read();
-    bool bit3 = bstream.read();
-    bool bit4 = bstream.read();
-
-    // close the file
-    bstream.close();
-
-    // print the bits to the console
-    std::cout << bit1 << " " << bit2 << " " << bit3 << " " << bit4 << std::endl;
-
-    return 0;
-}
-```
-This code will output 1 0 1 0 to the console, indicating that the bits 1010 were successfully written and read from the file.
