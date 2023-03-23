@@ -9,8 +9,8 @@ class Bstream
 {
 private:
     std::fstream fs; // File stream object
-    std::uint8_t write_buffer; // Buffer used for writing binary data
-    std::uint8_t read_buffer; // Buffer used for reading binary data
+    unsigned char write_buffer; // Buffer used for writing binary data
+    unsigned char read_buffer; // Buffer used for reading binary data
     int write_cur = 0; // Current position in the write buffer
     int read_cur = 0; // Current position in the read buffer
 
